@@ -20,7 +20,7 @@ namespace FirstApp.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            // এখানে সমস্ত ব্যবহারকারী লোড করা হচ্ছে, কোনো ফিল্টার ছাড়াই।
+
             var users = await _context.Users
                 .Select(u => new Users
                 {
@@ -28,7 +28,7 @@ namespace FirstApp.Controllers
                     Name = u.Name,
                     Email = u.Email,
                     LastSeen = u.LastSeen,
-                    IsBlocked = u.IsBlocked // নিশ্চিত করুন যে IsBlocked প্রপার্টিও সিলেক্ট করা হচ্ছে
+                    IsBlocked = u.IsBlocked 
                 })
                 .ToListAsync();
             return View(users);

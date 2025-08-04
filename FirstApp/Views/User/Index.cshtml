@@ -82,13 +82,13 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Select all checkboxes functionality
+         
             $('#selectAll').change(function() {
                 $('.user-checkbox').prop('checked', $(this).prop('checked'));
                 toggleButtons();
             });
 
-            // Check if any checkbox is selected
+         
             $('.user-checkbox').change(function() {
                 toggleButtons();
             });
