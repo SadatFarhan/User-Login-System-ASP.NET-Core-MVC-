@@ -16,10 +16,27 @@ namespace FirstApp.Controllers
         {
             _context = context;
         }
-
         [Authorize]
         public async Task<IActionResult> Index()
         {
+
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString) || !int.TryParse(userIdString, out int userId))
+            {
+
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login", "User");
+            }
+
+
+            var currentUser = await _context.Users.FindAsync(userId);
+
+
+            if (currentUser != null && currentUser.IsBlocked)
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login", "User");
+            }
 
             var users = await _context.Users
                 .Select(u => new Users
@@ -28,12 +45,12 @@ namespace FirstApp.Controllers
                     Name = u.Name,
                     Email = u.Email,
                     LastSeen = u.LastSeen,
-                    IsBlocked = u.IsBlocked 
+                    IsBlocked = u.IsBlocked
                 })
                 .ToListAsync();
+
             return View(users);
         }
-
         public IActionResult Register()
         {
             return View();
@@ -143,12 +160,6 @@ namespace FirstApp.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-
-
         public async Task<IActionResult> Block(int? id)
         {
             var user = await _context.Users.FindAsync(id);
@@ -171,7 +182,6 @@ namespace FirstApp.Controllers
             return RedirectToAction("Login", "User");
         }
 
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateUsersStatus(string action, int[] userIds)
@@ -189,6 +199,10 @@ namespace FirstApp.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
+
+            var currentUserIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int currentUserId;
+            int.TryParse(currentUserIdString, out currentUserId);
 
             switch (action)
             {
@@ -208,11 +222,20 @@ namespace FirstApp.Controllers
                     _context.Users.RemoveRange(usersToUpdate);
                     break;
                 default:
-                    break;
+                    break; // Handle cases where the action is not recognized
             }
 
             await _context.SaveChangesAsync();
+
+            // Check if the currently logged-in user was part of the action
+            if (action == "Block" && userIds.Contains(currentUserId))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                return RedirectToAction("Login", "User");
+            }
+
             return RedirectToAction(nameof(Index));
         }
     }
-}
+
+ } 

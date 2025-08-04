@@ -15,12 +15,7 @@ namespace FirstApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<Users>()
-            //    .HasIndex(u => u.Email)
-            //    .IsUnique();
-            //modelBuilder.Entity<Users>()
-            //    .HasIndex(u => u.Name)
-            //    .IsUnique();
+        
         }
     }
 

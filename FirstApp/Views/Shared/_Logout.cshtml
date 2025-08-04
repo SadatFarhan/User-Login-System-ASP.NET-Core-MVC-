@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @if(User.Identity.IsAuthenticated)
 {
-    <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
+    <form id="logoutForm" asp-controller="User" asp-action="Logout" method="post">
         <button type="submit" class="btn btn-link text-decoration-none">Logout</button>
     </form>
 }
