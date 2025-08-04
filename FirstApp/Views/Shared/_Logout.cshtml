@@ -1,0 +1,11 @@
+﻿@using Microsoft.AspNetCore.Identity
+@if(User.Identity.IsAuthenticated)
+{
+    <form id="logoutForm" asp-controller="Account" asp-action="Logout" method="post">
+        <button type="submit" class="btn btn-link text-decoration-none">Logout</button>
+    </form>
+}
+else
+{
+    <a href="@Url.Action("Login", "Account")" class="btn btn-link text-decoration-none">Login</a>
+}
