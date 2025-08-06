@@ -7,8 +7,9 @@ namespace FirstApp.Models
 
 
 
-        [Key]
+        
         public int Id { get; set; }
+        [Key]
         [Required]
         [DataType(DataType.Text)]
         public string? Name { get; set; }
